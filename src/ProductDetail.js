@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchProductDetail } from "./utils/api";
-import ProductLoader from "./ProductLoader";
+import ProductLoader from "./loader/ProductLoader";
 import DefaultImg from './images/placeholder.png';
 import "./css/ProductDetail.css";
 

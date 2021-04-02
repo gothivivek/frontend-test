@@ -4,6 +4,8 @@ import "./css/Autocomplete.css";
 import ProductDetail from "./ProductDetail";
 
 function Autocomplete() {
+
+  /* states used in this componentes with default values */
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedProduct, selectProduct] = useState("");
@@ -16,9 +18,11 @@ function Autocomplete() {
       setIsLoading(true);
       setSuggestions([]);
       
+      /* use controller and signal for abort previous pending request for fetch suggestions */
       const controller = new AbortController();
       const signal = controller.signal;
-
+      
+      /* Use Set and clear timeouts to optimize api call for search while user typing */
       let holdTimeout = setTimeout(function() {
         clearTimeout(holdTimeout);
         fetchSuggestions(searchTerm, signal).then((_suggestions) => {
@@ -26,25 +30,45 @@ function Autocomplete() {
           setIsLoading(false);
         }).catch(error => {
           setIsLoading(false);
-          console.log("Error in fetching search result: ", error);
+          if (error.name !== 'AbortError') { 
+            console.log("Error in fetching search result: ", error);  
+          }
         });
       }, 500);
       return () => {controller.abort()};
     }else if(selectedProduct === ""){
+
       document.querySelector('input.search-box').focus();
     }
   }, [searchTerm, selectedProduct]);
 
+  /**
+   * Returns product details selected from suggestion list.
+   *
+   * @param {number} productId Id of the selected product.
+   * @return {object} product details object.
+   */
   function getProduct(productId) {
     clearData();
     productId && selectProduct(productId);
   }
 
+  /**
+   * Clear suggestion list and search inouts after selecting product or select clear.
+   *
+   * @return {} Clear sugestion list and input field.
+   */
   function clearData(){
     setSuggestions([]);
     setSearchTerm("");
   }
 
+  /**
+   * Make application fully keyboard accessible.
+   *
+   * @param {object} e Object of event.
+   * @return {} Make application fully keyboard accessible.
+   */
   function handleKeyDown(e) {
     if (e.keyCode === 38 && cursor > 0) {
       setCursor(cursor - 1)
@@ -56,11 +80,6 @@ function Autocomplete() {
     }
   }
 
-  function getSuggestions(e){
-    setSearchTerm(e.target.value)
-    setCursor(-1);
-  }
-
   return (
     <React.Fragment>
       <div className="search-container">
@@ -69,7 +88,7 @@ function Autocomplete() {
           value={searchTerm}
           className="search-box"
           placeholder="Search for a product"
-          onChange={(e) => getSuggestions(e)}
+          onChange={(e) => {setSearchTerm(e.target.value); setCursor(-1);}}
           onKeyDown={(e) => handleKeyDown(e)}
         />
         {
