@@ -29,8 +29,8 @@ function Autocomplete() {
           _suggestions.length > 0 && setSuggestions(_suggestions);
           setIsLoading(false);
         }).catch(error => {
-          setIsLoading(false);
-          if (error.name !== 'AbortError') { 
+          if (error.name !== 'AbortError') {
+            setIsLoading(false); 
             console.log("Error in fetching search result: ", error);  
           }
         });
@@ -79,7 +79,6 @@ function Autocomplete() {
       document.querySelector('.active.suggestion-title').click();
     }
   }
-
   return (
     <React.Fragment>
       <div className="search-container">

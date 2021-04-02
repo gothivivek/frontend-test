@@ -39,6 +39,10 @@ img.product-image {
   text-overflow: ellipsis;
 }
 
+.detail-container .row .row-body{
+  cursor: default;
+}
+
 @media(max-width: 600px){
   .detail-container {
     max-width: 34rem;
